@@ -27,7 +27,7 @@ const int *_charstr_unicode_decomposition(int codepoint)
 {
     switch (codepoint) {
 """)
-    for codepoint in range(0, 0x110000):
+    for codepoint in range(0x110000):
         if codepoint in decompositions:
             sys.stdout.write(
                 r"""        case %d:

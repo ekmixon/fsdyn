@@ -72,7 +72,7 @@ def emit_binary(ranges, indentation):
     sys.stdout.write(
         r"""%sif (codepoint < %d) {
 """ % (I, end))
-    emit_binary(ranges[0:middle], indentation + 1)
+    emit_binary(ranges[:middle], indentation + 1)
     if end == start + 1:
         sys.stdout.write(
             r"""%s    return UNICODE_CATEGORY_%s;

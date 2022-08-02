@@ -7,10 +7,8 @@ import sys
 def main():
     qc_types = [ "NFC_QC", "NFD_QC", "NFKC_QC", "NFKD_QC" ]
     qc = []
-    for i in range(0x110000):
-        record = {}
-        for qc_type in qc_types:
-            record[qc_type] = "Y"
+    for _ in range(0x110000):
+        record = {qc_type: "Y" for qc_type in qc_types}
         qc.append(record)
     for line in open(sys.argv[1]):
         if "#" in line:
@@ -43,20 +41,20 @@ int charstr_allowed_unicode_normal_forms(int codepoint)
     for codepoint, record in enumerate(qc):
         disj = []
         for form in [ "NFC", "NFD", "NFKC", "NFKD" ]:
-            value = record["%s_QC" % form]
-            if value == "N":
-                disj.append("UNICODE_%s_DISALLOWED" % form)
-            elif value == "M":
-                disj.append("UNICODE_%s_MAYBE" % form)
+            value = record[f"{form}_QC"]
+            if value == "M":
+                disj.append(f"UNICODE_{form}_MAYBE")
+            elif value == "N":
+                disj.append(f"UNICODE_{form}_DISALLOWED")
             else:
                 assert value == "Y"
         if disj:
             sys.stdout.write("        case %d:\n" % codepoint)
-            line = "            return %s;" % " | ".join(disj)
+            line = f'            return {" | ".join(disj)};'
             while len(line) > 80:
                 n = line.rindex("|", 0, 80) + 1
                 sys.stdout.write("%s\n" % line[:n])
-                line = "               %s" % line[n:]
+                line = f"               {line[n:]}"
             sys.stdout.write("%s\n" % line)
     sys.stdout.write(r"""        default:
             return 0;
